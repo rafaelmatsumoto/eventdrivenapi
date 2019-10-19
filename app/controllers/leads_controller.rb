@@ -1,5 +1,7 @@
-class LeadsController < ApplicationController
+# frozen_string_literal: true
 
+class LeadsController < ApplicationController
+  before_action :get_publisher, only: [:create]
   # GET: leads
   def index
     @leads = Lead.all
@@ -11,6 +13,7 @@ class LeadsController < ApplicationController
     @lead = Lead.new(lead_params)
 
     if @lead.save
+      @publisher.publish('simple-topic', @lead)
       render json: @lead, status: :created, location: @lead
     else
       render json: @lead.errors, status: :unprocessable_entity
@@ -19,8 +22,11 @@ class LeadsController < ApplicationController
 
   private
 
+  def get_publisher
+    @publisher = Publisher.new
+  end
+
   def lead_params
     params.require(:lead).permit(:name, :email)
   end
-
 end
