@@ -13,7 +13,7 @@ class LeadsController < ApplicationController
     @lead = Lead.new(lead_params)
 
     if @lead.save
-      @publisher.publish('simple-topic', @lead)
+      @publisher.publish('lead-topic', @lead)
       render json: @lead, status: :created, location: @lead
     else
       render json: @lead.errors, status: :unprocessable_entity
@@ -27,6 +27,6 @@ class LeadsController < ApplicationController
   end
 
   def lead_params
-    params.require(:lead).permit(:name, :email)
+    params.require(:lead).permit(:name, :email, :annual_earnings)
   end
 end
